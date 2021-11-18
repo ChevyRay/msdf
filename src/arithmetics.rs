@@ -115,3 +115,8 @@ where
         -R::one()
     }
 }
+
+#[inline]
+pub fn fabs(x: f64) -> f64 {
+    x.abs()
+}

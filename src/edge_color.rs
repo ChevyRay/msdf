@@ -1,3 +1,4 @@
+#[derive(Copy, Clone)]
 pub enum EdgeColor {
     Black = 0,
     Red = 1,

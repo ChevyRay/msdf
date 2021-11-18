@@ -1,20 +1,16 @@
+use num_traits::Zero;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Vector2 {
-    x: f64,
-    y: f64,
+    pub x: f64,
+    pub y: f64,
 }
 
 impl Vector2 {
     #[inline]
     pub const fn new(x: f64, y: f64) -> Self {
         Self { x, y }
-    }
-
-    #[inline]
-    pub const fn zero() -> Self {
-        Self::new(0.0, 0.0)
     }
 
     #[inline]
@@ -40,10 +36,20 @@ impl Vector2 {
     }
 
     #[inline]
-    pub fn normalize(&self, allow_zero: bool) -> Self {
+    pub fn normalize(&self) -> Self {
         let len = self.length();
         if len == 0.0 {
-            Self::new(0.0, if allow_zero { 0.0 } else { 1.0 })
+            Self::new(0.0, 1.0)
+        } else {
+            Self::new(self.x / len, self.y / len)
+        }
+    }
+
+    #[inline]
+    pub fn normalize_allow_zero(&self) -> Self {
+        let len = self.length();
+        if len == 0.0 {
+            Self::new(0.0, 0.0)
         } else {
             Self::new(self.x / len, self.y / len)
         }
@@ -59,10 +65,10 @@ impl Vector2 {
     }
 
     #[inline]
-    pub fn get_orthonormal(&self, polarity: bool, allow_zero: bool) -> Self {
+    pub fn get_orthonormal(&self, polarity: bool) -> Self {
         let len = self.length();
         if len == 0.0 {
-            Self::new(0.0, if allow_zero { 0.0 } else { -1.0 })
+            Self::new(0.0, -1.0)
         } else {
             if polarity {
                 Self::new(-self.y / len, self.x / len)
@@ -73,10 +79,31 @@ impl Vector2 {
     }
 
     #[inline]
-    pub fn project(&self, vector: Self, positive: bool) -> Self {
-        let n = self.normalize(true);
+    pub fn get_orthonormal_allow_zero(&self, polarity: bool) -> Self {
+        let len = self.length();
+        if len == 0.0 {
+            Self::new(0.0, 0.0)
+        } else {
+            if polarity {
+                Self::new(-self.y / len, self.x / len)
+            } else {
+                Self::new(self.y / len, -self.x / len)
+            }
+        }
+    }
+
+    #[inline]
+    pub fn project(&self, vector: Self) -> Self {
+        let n = self.normalize_allow_zero();
         let t = dot_product(vector, n);
-        if positive && t <= 0.0 {
+        n * t
+    }
+
+    #[inline]
+    pub fn project_positive(&self, vector: Self) -> Self {
+        let n = self.normalize_allow_zero();
+        let t = dot_product(vector, n);
+        if t <= 0.0 {
             Vector2::zero()
         } else {
             n * t
@@ -88,6 +115,18 @@ impl From<f64> for Vector2 {
     #[inline]
     fn from(val: f64) -> Self {
         Self::new(val, val)
+    }
+}
+
+impl Zero for Vector2 {
+    #[inline]
+    fn zero() -> Self {
+        Self::new(0.0, 0.0)
+    }
+
+    #[inline]
+    fn is_zero(&self) -> bool {
+        self.x == 0.0 && self.y == 0.0
     }
 }
 
