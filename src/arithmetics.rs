@@ -120,3 +120,23 @@ where
 pub fn fabs(x: f64) -> f64 {
     x.abs()
 }
+
+#[inline]
+pub fn sqrt(x: f64) -> f64 {
+    x.sqrt()
+}
+
+#[inline]
+pub fn cos(x: f64) -> f64 {
+    x.cos()
+}
+
+#[inline]
+pub fn acos(x: f64) -> f64 {
+    x.acos()
+}
+
+#[inline]
+pub fn pow(x: f64, y: f64) -> f64 {
+    x.powf(y)
+}
