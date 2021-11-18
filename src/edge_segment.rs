@@ -1,5 +1,6 @@
 use crate::{
-    mix, CubicSegment, EdgeColor, LinearSegment, QuadraticSegment, SignedDistance, Vector2,
+    cross_product, dot_product, fabs, mix, CubicSegment, EdgeColor, LinearSegment,
+    QuadraticSegment, SignedDistance, Vector2,
 };
 
 #[derive(Clone)]
@@ -50,6 +51,37 @@ impl EdgeSegment {
         Self {
             color,
             segment: Segment::Cubic(CubicSegment(p0, p1, p2, p3)),
+        }
+    }
+
+    pub fn distance_to_pseudo_distance(
+        &self,
+        distance: &mut SignedDistance,
+        origin: Vector2,
+        param: f64,
+    ) {
+        if param < 0.0 {
+            let dir = self.direction(0.0).normalize();
+            let aq = origin - self.point(0.0);
+            let ts = dot_product(aq, dir);
+            if ts < 0.0 {
+                let pseudo_distance = cross_product(aq, dir);
+                if fabs(pseudo_distance) <= fabs(distance.distance) {
+                    distance.distance = pseudo_distance;
+                    distance.dot = 0.0;
+                }
+            }
+        } else if param > 1.0 {
+            let dir = self.direction(1.0).normalize();
+            let bq = origin - self.point(1.0);
+            let ts = dot_product(bq, dir);
+            if ts > 0.0 {
+                let pseudo_distance = cross_product(bq, dir);
+                if fabs(pseudo_distance) <= fabs(distance.distance) {
+                    distance.distance = pseudo_distance;
+                    distance.dot = 0.0;
+                }
+            }
         }
     }
 

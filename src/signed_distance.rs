@@ -2,8 +2,8 @@ use std::cmp::Ordering;
 
 #[derive(PartialEq)]
 pub struct SignedDistance {
-    distance: f64,
-    dot: f64,
+    pub distance: f64,
+    pub dot: f64,
 }
 
 impl SignedDistance {
