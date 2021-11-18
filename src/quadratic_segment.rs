@@ -232,4 +232,15 @@ impl QuadraticSegment {
             EdgeSegment::quadratic(color, m2, mix(self.1, self.2, 2.0 / 3.0), self.2),
         )
     }
+
+    #[inline]
+    pub fn convert_to_cubic(&self, color: EdgeColor) -> EdgeSegment {
+        EdgeSegment::cubic(
+            color,
+            self.0,
+            mix(self.0, self.1, 2.0 / 3.0),
+            mix(self.1, self.2, 1.0 / 3.0),
+            self.2,
+        )
+    }
 }

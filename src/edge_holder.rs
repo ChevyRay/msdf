@@ -38,6 +38,11 @@ impl EdgeHolder {
     }
 
     #[inline]
+    pub fn set_segment(&mut self, segment: EdgeSegment) {
+        self.segment = Some(segment);
+    }
+
+    #[inline]
     pub fn swap(&mut self, other: &mut EdgeHolder) {
         std::mem::swap(&mut self.segment, &mut other.segment);
     }

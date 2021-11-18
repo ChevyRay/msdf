@@ -22,12 +22,26 @@ pub struct Intersection {
     pub direction: i32,
 }
 
+impl Intersection {
+    pub fn new(x: f64, direction: i32) -> Self {
+        Self { x, direction }
+    }
+}
+
 pub struct Scanline {
     intersections: Vec<Intersection>,
     last_index: usize,
 }
 
 impl Scanline {
+    pub fn clear(&mut self) {
+        self.intersections.clear();
+    }
+
+    pub fn add_intersection(&mut self, intersection: Intersection) {
+        self.intersections.push(intersection);
+    }
+
     pub fn overlap(a: &Scanline, b: &Scanline, x_from: f64, x_to: f64, fill_rule: FillRule) -> f64 {
         let mut total = 0.0;
         let mut a_inside = false;
@@ -97,7 +111,7 @@ impl Scanline {
         total
     }
 
-    fn preprocess(&mut self) {
+    pub fn preprocess(&mut self) {
         self.last_index = 0;
         if !self.intersections.is_empty() {
             self.intersections
@@ -108,11 +122,6 @@ impl Scanline {
                 intersection.direction = total_direction;
             }
         }
-    }
-
-    pub fn set_intersections(&mut self, intersections: Vec<Intersection>) {
-        self.intersections = intersections;
-        self.preprocess();
     }
 
     pub fn move_to(&mut self, x: f64) -> Option<usize> {

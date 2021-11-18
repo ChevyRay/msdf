@@ -131,7 +131,7 @@ impl EdgeSegment {
     }
 
     #[inline]
-    pub fn bounds(&self, l: &mut f64, b: &mut f64, r: &mut f64, t: &mut f64) {
+    pub fn bound(&self, l: &mut f64, b: &mut f64, r: &mut f64, t: &mut f64) {
         match &self.segment {
             Segment::Linear(seg) => seg.bounds(l, b, r, t),
             Segment::Quadratic(seg) => seg.bounds(l, b, r, t),

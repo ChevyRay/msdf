@@ -10,6 +10,10 @@ impl Contour {
         self.edges.is_empty()
     }
 
+    pub fn clear(&mut self) {
+        self.edges.clear();
+    }
+
     pub fn add_edge(&mut self, edge: EdgeHolder) {
         self.edges.push(edge);
     }
@@ -21,7 +25,7 @@ impl Contour {
 
     pub fn bound(&self, l: &mut f64, b: &mut f64, r: &mut f64, t: &mut f64) {
         for edge in &self.edges {
-            edge.bounds(l, b, r, t);
+            edge.bound(l, b, r, t);
         }
     }
 

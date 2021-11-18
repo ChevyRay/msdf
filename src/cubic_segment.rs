@@ -1,6 +1,6 @@
 use crate::{
-    cross_product, dot_product, fabs, mix, non_zero_sign, point_bounds, solve_cubic,
-    solve_quadratic, EdgeColor, EdgeSegment, SignedDistance, Vector2,
+    cross_product, dot_product, fabs, mix, non_zero_sign, point_bounds, sign, solve_cubic,
+    solve_quadratic, sqrt, EdgeColor, EdgeSegment, SignedDistance, Vector2,
 };
 use num_traits::Zero;
 
@@ -295,5 +295,16 @@ impl CubicSegment {
                 self.3,
             ),
         )
+    }
+
+    pub fn deconverge(&mut self, param: i32, amount: f64) {
+        let dir = self.direction(param as f64);
+        let normal = dir.get_orthonormal(true);
+        let h = dot_product(self.direction_change(param as f64) - dir, normal);
+        if param == 0 {
+            self.1 += (dir + normal * sign::<f64, f64>(h) * sqrt(fabs(h))) * amount;
+        } else if param == 1 {
+            self.2 -= (dir - normal * sign::<f64, f64>(h) * sqrt(fabs(h))) * amount;
+        }
     }
 }
