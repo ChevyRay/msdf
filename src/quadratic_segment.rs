@@ -71,15 +71,14 @@ impl QuadraticSegment {
                 param = dot_product(origin - self.1, ep_dir) / dot_product(ep_dir, ep_dir);
             }
         }
-        for i in 0..solutions {
-            if t[i] > 0.0 && t[i] < 1.0 {
-                let qe = self.0 + ab * 2.0 * t[i] + br * t[i] * t[i] - origin;
+        for &t in &t[..solutions] {
+            if t > 0.0 && t < 1.0 {
+                let qe = self.0 + ab * 2.0 * t + br * t * t - origin;
                 let distance = qe.length();
                 if distance <= fabs(min_distance) {
                     min_distance =
-                        non_zero_sign::<f64, f64>(cross_product(self.direction(t[i]), qe))
-                            * distance;
-                    param = t[i];
+                        non_zero_sign::<f64, f64>(cross_product(self.direction(t), qe)) * distance;
+                    param = t;
                 }
             }
         }

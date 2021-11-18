@@ -1,13 +1,18 @@
-use crate::{EdgeColor, LinearSegment, QuadraticSegment, SignedDistance, Vector2};
+use crate::{
+    mix, CubicSegment, EdgeColor, LinearSegment, QuadraticSegment, SignedDistance, Vector2,
+};
 
+#[derive(Clone)]
 pub struct EdgeSegment {
     pub color: EdgeColor,
     pub segment: Segment,
 }
 
+#[derive(Clone)]
 pub enum Segment {
     Linear(LinearSegment),
     Quadratic(QuadraticSegment),
+    Cubic(CubicSegment),
 }
 
 impl EdgeSegment {
@@ -36,10 +41,24 @@ impl EdgeSegment {
     }
 
     #[inline]
+    pub fn cubic(color: EdgeColor, p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2) -> Self {
+        let (p1, p2) = if (p1 == p0 || p1 == p3) && (p2 == p0 || p2 == p3) {
+            (mix(p0, p3, 1.0 / 3.0), mix(p0, p3, 2.0 / 3.0))
+        } else {
+            (p1, p2)
+        };
+        Self {
+            color,
+            segment: Segment::Cubic(CubicSegment(p0, p1, p2, p3)),
+        }
+    }
+
+    #[inline]
     pub fn point(&self, param: f64) -> Vector2 {
         match &self.segment {
             Segment::Linear(seg) => seg.point(param),
             Segment::Quadratic(seg) => seg.point(param),
+            Segment::Cubic(seg) => seg.point(param),
         }
     }
 
@@ -48,22 +67,16 @@ impl EdgeSegment {
         match &self.segment {
             Segment::Linear(seg) => seg.direction(),
             Segment::Quadratic(seg) => seg.direction(param),
+            Segment::Cubic(seg) => seg.direction(param),
         }
     }
 
     #[inline]
-    pub fn direction_change(&self, _param: f64) -> Vector2 {
+    pub fn direction_change(&self, param: f64) -> Vector2 {
         match &self.segment {
             Segment::Linear(seg) => seg.direction_change(),
             Segment::Quadratic(seg) => seg.direction_change(),
-        }
-    }
-
-    #[inline]
-    pub fn length(&self) -> f64 {
-        match &self.segment {
-            Segment::Linear(seg) => seg.length(),
-            Segment::Quadratic(seg) => seg.length(),
+            Segment::Cubic(seg) => seg.direction_change(param),
         }
     }
 
@@ -72,6 +85,7 @@ impl EdgeSegment {
         match &self.segment {
             Segment::Linear(seg) => seg.signed_distance(origin),
             Segment::Quadratic(seg) => seg.signed_distance(origin),
+            Segment::Cubic(seg) => seg.signed_distance(origin),
         }
     }
 
@@ -80,6 +94,7 @@ impl EdgeSegment {
         match &self.segment {
             Segment::Linear(seg) => seg.scanline_intersections(x, dy, y),
             Segment::Quadratic(seg) => seg.scanline_intersections(x, dy, y),
+            Segment::Cubic(seg) => seg.scanline_intersections(x, dy, y),
         }
     }
 
@@ -88,6 +103,7 @@ impl EdgeSegment {
         match &self.segment {
             Segment::Linear(seg) => seg.bounds(l, b, r, t),
             Segment::Quadratic(seg) => seg.bounds(l, b, r, t),
+            Segment::Cubic(seg) => seg.bounds(l, b, r, t),
         }
     }
 
@@ -96,6 +112,7 @@ impl EdgeSegment {
         match &mut self.segment {
             Segment::Linear(seg) => seg.reverse(),
             Segment::Quadratic(seg) => seg.reverse(),
+            Segment::Cubic(seg) => seg.reverse(),
         }
     }
 
@@ -104,6 +121,7 @@ impl EdgeSegment {
         match &mut self.segment {
             Segment::Linear(seg) => seg.move_start_point(to),
             Segment::Quadratic(seg) => seg.move_start_point(to),
+            Segment::Cubic(seg) => seg.move_start_point(to),
         }
     }
 
@@ -112,6 +130,7 @@ impl EdgeSegment {
         match &mut self.segment {
             Segment::Linear(seg) => seg.move_end_point(to),
             Segment::Quadratic(seg) => seg.move_end_point(to),
+            Segment::Cubic(seg) => seg.move_end_point(to),
         }
     }
 
@@ -120,6 +139,7 @@ impl EdgeSegment {
         match &self.segment {
             Segment::Linear(seg) => seg.split_in_thirds(self.color),
             Segment::Quadratic(seg) => seg.split_in_thirds(self.color),
+            Segment::Cubic(seg) => seg.split_in_thirds(self.color),
         }
     }
 }

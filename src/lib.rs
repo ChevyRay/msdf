@@ -1,5 +1,6 @@
 mod arithmetics;
 mod contour;
+mod cubic_segment;
 mod edge_color;
 mod edge_coloring;
 mod edge_segment;
@@ -21,6 +22,7 @@ mod vector2;
 
 pub use arithmetics::*;
 pub use contour::*;
+pub use cubic_segment::*;
 pub use edge_color::*;
 pub use edge_coloring::*;
 pub use edge_segment::*;
