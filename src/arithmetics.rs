@@ -140,3 +140,8 @@ pub fn acos(x: f64) -> f64 {
 pub fn pow(x: f64, y: f64) -> f64 {
     x.powf(y)
 }
+
+#[inline]
+pub fn log(x: f64) -> f64 {
+    x.log(std::f64::consts::E)
+}

@@ -1,6 +1,6 @@
 use crate::{
-    cross_product, dot_product, fabs, mix, non_zero_sign, sign, EdgeColor, EdgeSegment,
-    SignedDistance, Vector2,
+    cross_product, dot_product, fabs, mix, non_zero_sign, point_bounds, sign, EdgeColor,
+    EdgeSegment, SignedDistance, Vector2,
 };
 use num_traits::Zero;
 
@@ -86,21 +86,5 @@ impl LinearSegment {
             EdgeSegment::linear(color, m1, m2),
             EdgeSegment::linear(color, m2, self.1),
         )
-    }
-}
-
-#[inline]
-fn point_bounds(p: &Vector2, l: &mut f64, b: &mut f64, r: &mut f64, t: &mut f64) {
-    if p.x < *l {
-        *l = p.x;
-    }
-    if p.y < *b {
-        *b = p.y;
-    }
-    if p.x > *r {
-        *r = p.x;
-    }
-    if p.y > *t {
-        *t = p.y;
     }
 }
