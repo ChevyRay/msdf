@@ -1,5 +1,4 @@
 use crate::{EdgeColor, EdgeSegment, Vector2};
-use std::ops::{Deref, DerefMut};
 
 #[derive(Default, Clone)]
 pub struct EdgeHolder {
