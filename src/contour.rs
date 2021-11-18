@@ -2,10 +2,14 @@ use crate::{cross_product, dot_product, min, point_bounds, sign, sqrt, EdgeHolde
 
 #[derive(Default)]
 pub struct Contour {
-    edges: Vec<EdgeHolder>,
+    pub(crate) edges: Vec<EdgeHolder>,
 }
 
 impl Contour {
+    pub fn empty(&self) -> bool {
+        self.edges.is_empty()
+    }
+
     pub fn add_edge(&mut self, edge: EdgeHolder) {
         self.edges.push(edge);
     }
