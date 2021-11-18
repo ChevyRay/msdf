@@ -1,8 +1,23 @@
 use crate::{EdgeColor, EdgeSegment, Vector2};
+use std::ops::{Deref, DerefMut};
 
 #[derive(Default, Clone)]
 pub struct EdgeHolder {
     segment: Option<EdgeSegment>,
+}
+
+impl Deref for EdgeHolder {
+    type Target = EdgeSegment;
+
+    fn deref(&self) -> &Self::Target {
+        self.segment().unwrap()
+    }
+}
+
+impl DerefMut for EdgeHolder {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.segment_mut().unwrap()
+    }
 }
 
 impl From<EdgeSegment> for EdgeHolder {
