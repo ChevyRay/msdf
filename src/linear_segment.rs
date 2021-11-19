@@ -28,13 +28,13 @@ impl LinearSegment {
         (self.1 - self.0).length()
     }
 
-    pub fn signed_distance(&self, origin: Vector2) -> SignedDistance {
+    pub fn signed_distance(&self, origin: Vector2, param: &mut f64) -> SignedDistance {
         let aq = origin - self.0;
         let ab = self.1 - self.0;
-        let param = dot_product(aq, ab) / dot_product(ab, ab);
-        let eq = if param > 0.5 { self.1 } else { self.0 } - origin;
+        *param = dot_product(aq, ab) / dot_product(ab, ab);
+        let eq = if *param > 0.5 { self.1 } else { self.0 } - origin;
         let endpoint_distance = eq.length();
-        if param > 0.0 && param < 1.0 {
+        if *param > 0.0 && *param < 1.0 {
             let ortho_distance = dot_product(ab.get_orthonormal(false), aq);
             if ortho_distance.abs() < endpoint_distance.abs() {
                 return SignedDistance::new(ortho_distance, 0.0);

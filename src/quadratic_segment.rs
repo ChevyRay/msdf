@@ -48,7 +48,7 @@ impl QuadraticSegment {
             / (brbr * br_len);
     }
 
-    pub fn signed_distance(&self, origin: Vector2) -> SignedDistance {
+    pub fn signed_distance(&self, origin: Vector2, param: &mut f64) -> SignedDistance {
         let qa = self.0 - origin;
         let ab = self.1 - self.0;
         let br = self.2 - self.1 - ab;
@@ -61,14 +61,14 @@ impl QuadraticSegment {
 
         let mut ep_dir = self.direction(0.0);
         let mut min_distance = non_zero_sign::<f64, f64>(cross_product(ep_dir, qa)) * qa.length();
-        let mut param = -dot_product(qa, ep_dir) / dot_product(ep_dir, ep_dir);
+        *param = -dot_product(qa, ep_dir) / dot_product(ep_dir, ep_dir);
         {
             ep_dir = self.direction(1.0);
             let distance = (self.2 - origin).length();
             if distance < fabs(min_distance) {
                 min_distance =
                     non_zero_sign::<f64, f64>(cross_product(ep_dir, self.2 - origin)) * distance;
-                param = dot_product(origin - self.1, ep_dir) / dot_product(ep_dir, ep_dir);
+                *param = dot_product(origin - self.1, ep_dir) / dot_product(ep_dir, ep_dir);
             }
         }
         for &t in &t[..solutions] {
@@ -78,14 +78,14 @@ impl QuadraticSegment {
                 if distance <= fabs(min_distance) {
                     min_distance =
                         non_zero_sign::<f64, f64>(cross_product(self.direction(t), qe)) * distance;
-                    param = t;
+                    *param = t;
                 }
             }
         }
 
-        if param >= 0.0 && param <= 1.0 {
+        if *param >= 0.0 && *param <= 1.0 {
             SignedDistance::new(min_distance, 0.0)
-        } else if param < 0.5 {
+        } else if *param < 0.5 {
             SignedDistance::new(
                 min_distance,
                 fabs(dot_product(self.direction(0.0).normalize(), qa.normalize())),

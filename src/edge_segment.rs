@@ -113,11 +113,11 @@ impl EdgeSegment {
     }
 
     #[inline]
-    pub fn signed_distance(&self, origin: Vector2) -> SignedDistance {
+    pub fn signed_distance(&self, origin: Vector2, param: &mut f64) -> SignedDistance {
         match &self.segment {
-            Segment::Linear(seg) => seg.signed_distance(origin),
-            Segment::Quadratic(seg) => seg.signed_distance(origin),
-            Segment::Cubic(seg) => seg.signed_distance(origin),
+            Segment::Linear(seg) => seg.signed_distance(origin, param),
+            Segment::Quadratic(seg) => seg.signed_distance(origin, param),
+            Segment::Cubic(seg) => seg.signed_distance(origin, param),
         }
     }
 
