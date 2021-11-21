@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-#[derive(PartialEq)]
+#[derive(Clone, PartialEq)]
 pub struct SignedDistance {
     pub distance: f64,
     pub dot: f64,

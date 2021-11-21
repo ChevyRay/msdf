@@ -1,7 +1,7 @@
 use num_traits::Zero;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Default, Copy, Clone, PartialEq, Debug)]
 pub struct Vector2 {
     pub x: f64,
     pub y: f64,
